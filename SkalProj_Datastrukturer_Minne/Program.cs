@@ -1,10 +1,7 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System.Linq;
+
 //Svar, resten av svaren se längre ner
 //1.Heapen är en lagringsstruktur i minnet där allt åtkomligt samtidigt, medan stackens objekt är staplade och bara det översta är åtkomligt. Stacken
 //stacken håller ordningen själv dv.s. den är inbyggd, medan du behöver hålla koll på den så minnet ej blir fullt.
@@ -296,154 +293,69 @@ namespace SkalProj_Datastrukturer_Minne
 
         static void CheckParanthesis()
         {
-            while (true)
+            do
             {
+                Console.WriteLine("Please enter a string to check!");
+                var input = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(input)) // string!.IsNullOrWhiteSpace(input))
+                    Console.WriteLine($"Wellformated: {IsWellFormatedp(input)}");
 
-                int R;
-                string s = "";
-                while (s == "")
-                {
-                    Console.WriteLine(" write something with parantheses in it (q= quit)");
-                    s = Console.ReadLine();
-                }
-                if (s == "q") { break; }
-                s = makeparanthesis(s);
-                string matchstring;
-
-                List<string> badpar = new List<string>() { "(]", "(}", "[)", "[}", "{)", "{]" };
-                string par1 = "()";
-                string par2 = "[]";
-                string par3 = "{}";
-                int par1count = 0;
-                int par2count = 0;
-                int par3count = 0;
-                bool badstring = false;
-
-
-                //kollar efter ickevälformiga paranteser i listan badpar t.ex.
-                while (s.Length > 1 && badstring == false)
-                {
-                    for (int i = 0; i < s.Length; i++)
-                    {
-                        if (badstring == true) { break; }
-                        for (int x = 0; x < 6; x++)
-                        {
-                            if (s[i] == badpar[x][0] && s[i + 1] == badpar[x][1])
-                            {
-                                badstring = true;
-                                break;
-                                //Console.WriteLine("inte en välformad sträng");
-                            }
-                        }
-                    }
-
-                    // kollar att motsatta paranteser finns av samma typ  
-
-
-
-                    foreach (char item in s)
-                    {
-                        if (item == par1[0])
-                        {
-                            par1count += 1;
-                        }
-
-                        if (item == par1[1])
-                        {
-                            par1count -= 1;
-                        }
-
-                        if (item == par2[0])
-                        {
-                            par2count += 1;
-                        }
-
-                        if (item == par2[1])
-                        {
-                            par2count -= 1;
-                        }
-
-                        if (item == par3[0])
-                        {
-                            par3count += 1;
-                        }
-
-                        if (item == par3[1])
-                        {
-                            par3count -= 1;
-                        }
-                    }
-                    if (par1count != 0) { badstring = true; }
-
-                    if (par2count != 0) { badstring = true; }
-
-                    if (par3count != 0) { badstring = true; }
-
-
-                    if (badstring == false)
-                    {
-                        Console.WriteLine("välformad sträng!");
-                        Console.ReadLine();
-                        break;
-                    }
-                    /*if (badstring == true)
-                    {
-                        Console.WriteLine("Inte en välformad sträng");
-                        Console.ReadLine();
-                        break;
-
-                    }*/
-
-
-                }
-                if (s.Length <= 1) { badstring = true; }
-                if (badstring == true)
-                {
-                    Console.WriteLine("Inte en välformad sträng");
-                    Console.ReadLine();
-
-                }
-
-            }
-
+            } while (true);
         }
-    
-    /*if (same == 1)
-    {
-        break;
-    }*/
 
-
-    // }
-
-    //}
-    /*
-     * Use this method to check if the paranthesis in a string is Correct or incorrect.
-     * Example of correct: (()), {}, [({})],  List<int> list = new List<int>() { 1, 2, 3, 4 };
-     * Example of incorrect: (()]), [), {[()}],  List<int> list = new List<int>() { 1, 2, 3, 4 );
-     */
-
-
-
-    static string makeparanthesis(string k)
-    {
-        List<string> parstd = new List<string>() { "(", ")", "{", "}", "[", "]" };
-        string s = "";
-        foreach (var item in k)
-
+        private static bool IsWellFormatedp(string input)
         {
-            foreach (var x in parstd)  //x in par parx 
+            Dictionary<char, char> dict = GetDict();
+
+            var stack = new Stack<char>();
+            Console.WriteLine(dict['(']);
+            //int count = 0;
+            var deleted = ' ';
+
+
+            foreach (var item in input)
             {
-                if (item.ToString() == x)//(item == '(' || item == ')') //gör en ny sträng av strängen av bara paranteserna
-                {
-                    s += item;
+                if (stack.Count == 0 && dict.ContainsValue(item)) // kolla om första är en höger => felformaterad
+                    return false;
+
+                if (dict.ContainsKey(item))// dvs. den är vänster lägger alltså inte till höger 
+
+                    try
+                    {
+                        stack.Push(item); //lagrar vänsterparantesens motsats som ska kolla att vänstersidan motsvarar höger t.ex. (({[[  motsatsen lagras dvs. ]]}))
+                    }
+                    catch (KeyNotFoundException)
+                    {
+
+                        break;//continue;
+                    }
+
+                if (dict.ContainsValue(item))
+                {// dvs den träffar på en höger 
+                    deleted = stack.Pop();
+                    if (dict[deleted] == item) // dvs den träffar på motsatsen (motsatsen = dict[deleted] dvs stoppar in värdet från stacken och returnerar motsatsen)till första vänster som först lades dit kollar nu te.x. (([{.. kollar om nästa är: }..] 
+                        continue;
+                    if (dict[deleted] != item && stack.Count != 0) //|| (stack.Count == 0)) // dvs den träffar på en höger parantes som inte motsvarar en lagrad
+                        return false;
                 }
             }
-        }
-        return s;
-    }
 
-   }
+            if (stack.Count > 0)
+                return false;
+            return true;
+        }
+
+        private static Dictionary<char, char> GetDict()
+        {
+            return new Dictionary<char, char>
+            {
+                { '{', '}' },
+                { '(', ')' },
+                { '[', ']' },
+                { '<', '>' }
+            };
+        }
+    }
 }
 
 
