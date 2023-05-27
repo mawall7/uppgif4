@@ -290,8 +290,8 @@ namespace SkalProj_Datastrukturer_Minne
             }
 
         }
-
-        static void CheckParanthesis()
+  //  
+        static void CheckParanthesis() //kollar varje värde i en sträng och när en vänsterparantes påträffas sparas den i stacken och när en högerparantes påträffas görs en check om den motsvarar senaste vänstraparantesen i stacken (samtidigt tas det värdet bort från stacken) och strängen är då sålänge en välformad parantes som returnerar true. annars false. 
         {
             do
             {
