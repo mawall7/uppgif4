@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 //Svar, resten av svaren se längre ner
-//1.Heapen är en lagringsstruktur i minnet där allt åtkomligt samtidigt, medan stackens objekt är staplade och bara det översta är åtkomligt. Stacken
-//stacken håller ordningen själv dv.s. den är inbyggd, medan du behöver hålla koll på den så minnet ej blir fullt.
+//1.Heapen är en lagringsstruktur i minnet där allt är åtkomligt samtidigt, medan stackens objekt är staplade och bara det översta är åtkomligt. Stacken
+//stacken håller ordningen själv dv.s. den är inbyggd, medan du behöver hålla koll på heapen så minnet ej blir fullt.
 
 //2.Valuetypes är av typen bool, int char, sbyte osv. Lagrar då t.ex. true, false, heltal, enstakabokstäver, osv. och
 //en värdetyp lagras alltid på samma ställe där den definieras, på antingen stacken eller heapen. 
@@ -315,14 +315,14 @@ namespace SkalProj_Datastrukturer_Minne
 
             foreach (var item in input)
             {
-                if (stack.Count == 0 && dict.ContainsValue(item)) // kolla om första är en höger => felformaterad
+                if (stack.Count == 0 && dict.ContainsValue(item)) // kolla om första är en högerparantes => felformaterad
                     return false;
 
-                if (dict.ContainsKey(item))// dvs. den är vänster lägger alltså inte till höger 
+                if (dict.ContainsKey(item))// dvs. den är vänsterparantes lägger alltså inte till högerparantes 
 
                     try
                     {
-                        stack.Push(item); //lagrar vänsterparantesens motsats som ska kolla att vänstersidan motsvarar höger t.ex. (({[[  motsatsen lagras dvs. ]]}))
+                        stack.Push(item); //lagrar vänsterparantesen och stack.Count är ej 0 => koden ovan returnerar ej false 
                     }
                     catch (KeyNotFoundException)
                     {
@@ -330,8 +330,8 @@ namespace SkalProj_Datastrukturer_Minne
                         break;//continue;
                     }
 
-                if (dict.ContainsValue(item))
-                {// dvs den träffar på en höger 
+                if (dict.ContainsValue(item)) // dvs item är högerparantes
+                { 
                     deleted = stack.Pop();
                     if (dict[deleted] == item) // dvs den träffar på motsatsen (motsatsen = dict[deleted] dvs stoppar in värdet från stacken och returnerar motsatsen)till första vänster som först lades dit kollar nu te.x. (([{.. kollar om nästa är: }..] 
                         continue;
