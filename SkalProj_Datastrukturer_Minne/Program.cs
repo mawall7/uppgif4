@@ -322,7 +322,7 @@ namespace SkalProj_Datastrukturer_Minne
 
                     try
                     {
-                        stack.Push(item); //lagrar vänsterparantesen och stack.Count är ej 0 => koden ovan returnerar ej false 
+                        stack.Push(item); //lagrar vänsterparantesen i stacken och stack.Count är ej 0 => koden ovan returnerar ej false 
                     }
                     catch (KeyNotFoundException)
                     {
@@ -330,11 +330,12 @@ namespace SkalProj_Datastrukturer_Minne
                         break;//continue;
                     }
 
-                if (dict.ContainsValue(item)) // dvs item är högerparantes
+                if (dict.ContainsValue(item)) // dvs item är någon högerparantes
                 { 
-                    deleted = stack.Pop();
+                    deleted = stack.Pop();  // tar bort senaste vänsterparantes från stacken. dict[deleted] == item .kollar om högerparantes motstavarar samma typ av parantes som senaste påträffade vänsterparantesen dvs. t.ex. om ]  ska stacken ytterst ha (stack.push) vara [ då är det rätt och hoppar över nästa kodblock continue
                     if (dict[deleted] == item) // dvs den träffar på motsatsen (motsatsen = dict[deleted] dvs stoppar in värdet från stacken och returnerar motsatsen)till första vänster som först lades dit kollar nu te.x. (([{.. kollar om nästa är: }..] 
                         continue;
+                    // koden nedan != betyder t.ex här att senaste påträffade vänsterparantes (lagrad i stacken sedan senaste träff) t.ex. { och högerparantes dvs. item nu t.ex. är ] .       
                     if (dict[deleted] != item && stack.Count != 0) //|| (stack.Count == 0)) // dvs den träffar på en höger parantes som inte motsvarar en lagrad
                         return false;
                 }
